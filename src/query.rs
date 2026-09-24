@@ -20,7 +20,9 @@ use lancedb::query::{ExecutableQuery, HasQuery, QueryBase, QueryFilter, Select};
 use lancedb::{DistanceType, Table};
 
 use crate::connection::{get_runtime, LanceDBTable};
-use crate::error::{handle_error, set_invalid_argument_message, set_unknown_error_message, LanceDBError};
+use crate::error::{
+    handle_error, set_invalid_argument_message, set_unknown_error_message, LanceDBError,
+};
 use crate::expr::LanceDBExpr;
 use crate::types::LanceDBDistanceType;
 
@@ -554,10 +556,7 @@ pub unsafe extern "C" fn lancedb_query_explain_plan(
             rust_query = rust_query.select(select.clone());
         }
         if let Some(ref df_filter) = query_ref.df_filter {
-            rust_query.mut_query().filter =
-                Some(QueryFilter::Datafusion(df_filter.clone()));
-        } else if let Some(ref filter) = query_ref.filter {
-            rust_query = rust_query.only_if(filter);
+            rust_query.mut_query().filter = Some(QueryFilter::Datafusion(df_filter.clone()));
         }
 
         rust_query.explain_plan(verbose).await
@@ -625,10 +624,7 @@ pub unsafe extern "C" fn lancedb_vector_query_explain_plan(
             rust_query = rust_query.select(select.clone());
         }
         if let Some(ref df_filter) = query_ref.df_filter {
-            rust_query.mut_query().filter =
-                Some(QueryFilter::Datafusion(df_filter.clone()));
-        } else if let Some(ref filter) = query_ref.filter {
-            rust_query = rust_query.only_if(filter);
+            rust_query.mut_query().filter = Some(QueryFilter::Datafusion(df_filter.clone()));
         }
         if let Some(distance_type) = query_ref.distance_type {
             rust_query = rust_query.distance_type(distance_type);
